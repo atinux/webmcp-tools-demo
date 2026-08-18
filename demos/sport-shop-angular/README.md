@@ -1,6 +1,6 @@
 # WebMCP Sports | E-Commerce & On-Site AI Assistant Demo
 
-🚀 Live Demo: https://googlechromelabs.github.io/webmcp-tools/demos/sport-shop-angular/
+🚀 Live Demo: `https://<your-github-username>.github.io/<your-repository-name>/`
 
 An e-commerce storefront for sports equipment, built with Angular and WebMCP. This project demonstrates how an integrated **On-Site AI Assistant** and browser-level AI agents interact with an e-commerce site to search catalog items, check promotions and store policies, manage a shopping cart, and complete checkouts.
 
@@ -79,6 +79,10 @@ Start a local development server at `http://localhost:4200/`:
 npm start
 ```
 
+### GitHub Pages Deployment
+
+The repository workflow in `/home/runner/work/webmcp-tools-demo/webmcp-tools-demo/.github/workflows/deploy.yml` builds this app with the correct repository-specific `base-href` and publishes the compiled `browser` output to GitHub Pages.
+
 ### On-Site AI Assistant Setup
 
 To use the embedded AI assistant in local development:
@@ -107,5 +111,4 @@ Run unit tests with Vitest:
 ```bash
 npm test
 ```
-
 
