@@ -1,15 +1,17 @@
 # WebMCP Sports | E-Commerce & On-Site AI Assistant Demo
 
-🚀 Live Demo: `https://<your-github-username>.github.io/<your-repository-name>/`
+🚀 Live Demo: [https://atinux.github.io/webmcp-tools-demo/](https://atinux.github.io/webmcp-tools-demo/)
 
 An e-commerce storefront for sports equipment, built with Angular and WebMCP. This project demonstrates how an integrated **On-Site AI Assistant** and browser-level AI agents interact with an e-commerce site to search catalog items, check promotions and store policies, manage a shopping cart, and complete checkouts.
 
 ## 🌟 Key Features
 
-- **On-Site AI Assistant (Gemini 3.1 Flash Lite)**: An embedded, slide-out agent drawer powered by Google GenAI (`@google/genai`). The assistant discovers and executes WebMCP tools directly in-browser (`document.modelContext`), featuring:
+- **On-Site AI Assistant with two engines**: An embedded, slide-out agent drawer that discovers and executes WebMCP tools directly in-browser (`document.modelContext`). Pick your engine in the drawer:
+  - **Local AI (Qwen3 1.7B via WebLLM)**: runs entirely in your browser over WebGPU — no API key, no server calls. One-time ~1 GB model download, cached by the browser. Tool calling uses Qwen3's native Hermes-style `<tool_call>` format.
+  - **Gemini 3.1 Flash Lite (Google GenAI)**: cloud inference via `@google/genai` with your own API key.
   - Real-time tool execution status indicators in the chat stream (e.g., ⚙️ Executing tool... / ✅ Executed).
   - Quick prompt presets (e.g., "Find basketball items under $50", "What promotions are available?").
-  - Persistent Gemini API key management stored in `localStorage` with a masked input toggle.
+  - Persistent provider choice and Gemini API key management stored in `localStorage` with a masked input toggle.
   - Markdown response rendering for lists, tables, and product details.
 - **WebMCP Tool Integration**:
   - **Application-wide (Global)**: Available on all pages for catalog navigation and store policies.
@@ -48,7 +50,7 @@ WebMCP Sports registers 13 in-browser tools categorized by scope:
 ## 🛠 Tech Stack
 
 - **Framework**: Angular 22 (Signals & Standalone Components)
-- **AI & Protocol**: Google GenAI SDK (`@google/genai`), WebMCP (`document.modelContext`), [WebMCP Polyfill](../shared/webmcp-polyfill.js)
+- **AI & Protocol**: WebLLM (`@mlc-ai/web-llm`, local in-browser inference), Google GenAI SDK (`@google/genai`), WebMCP (`document.modelContext`), [WebMCP Polyfill](../shared/webmcp-polyfill.js)
 - **Styling**: Vanilla CSS & TailwindCSS v4
 - **Build Tool**: Angular CLI / Vite
 - **Testing**: Vitest
@@ -85,17 +87,21 @@ The repository workflow in `/home/runner/work/webmcp-tools-demo/webmcp-tools-dem
 
 ### On-Site AI Assistant Setup
 
-To use the embedded AI assistant in local development:
-1. Open the app in your browser at `http://localhost:4200/`.
+To use the embedded AI assistant:
+1. Open the app in your browser (locally at `http://localhost:4200/` or on the live demo).
 2. Click the AI Assistant FAB (floating button on bottom-left) or click the prompt bar on the Search / Product pages.
-3. Enter your [Gemini API Key](https://aistudio.google.com/app/apikey). The key is stored locally in your browser's `localStorage`.
+3. Choose an AI engine:
+   - **Local AI (recommended, no key needed)**: click "Use Local AI". The Qwen3 1.7B model (~1 GB) is downloaded once and cached by your browser. Requires a WebGPU-enabled browser (Chrome or Edge on a machine with a GPU).
+   - **Gemini API**: enter your [Gemini API Key](https://aistudio.google.com/app/apikey). The key is stored locally in your browser's `localStorage`.
+
+You can switch engines anytime via the tune icon in the drawer header.
 
 ## 📂 Project Structure
 
 - `src/app/pages`: Application views (Home, Search, Product Detail)
 - `src/app/components`: UI modules (Header, Hero, Agent Drawer, AI Sidebar, Cart Modal, Product Cards)
 - `src/app/services`: Core services:
-  - `agent.service.ts`: Gemini 3.1 Flash Lite orchestration & in-browser WebMCP tool execution.
+  - `agent.service.ts`: AI provider orchestration (local WebLLM/Qwen3 or Gemini 3.1 Flash Lite) & in-browser WebMCP tool execution.
   - `webmcp.service.ts`: Global WebMCP tool registrations.
   - `cart.service.ts`: Cart state & promo calculation.
   - `product.service.ts`: Product catalog & search filtering.

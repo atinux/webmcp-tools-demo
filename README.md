@@ -1,6 +1,6 @@
 # WebMCP Sports Demo
 
-This repository now contains a single WebMCP demo: [**WebMCP Sports**](demos/sport-shop-angular/), an Angular storefront for sports equipment with in-browser WebMCP tools and an on-site AI assistant.
+This repository now contains a single WebMCP demo: [**WebMCP Sports**](demos/sport-shop-angular/), an Angular storefront for sports equipment with in-browser WebMCP tools and an on-site AI assistant. The assistant can run on a fully local in-browser model (Qwen3 1.7B via WebLLM, no API key required) or on the Gemini API with your own key.
 
 **Live demo:** [https://atinux.github.io/webmcp-tools-demo/](https://atinux.github.io/webmcp-tools-demo/)
 
