@@ -1,8 +1,9 @@
-name: Deploy Demos to Pages
+name: Deploy Sports Shop to Pages
 
 on:
   push:
     branches: ["main"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -21,70 +22,19 @@ jobs:
         with:
           node-version: 22
           cache: "npm"
-          cache-dependency-path: "demos/react-flightsearch/package-lock.json"
+          cache-dependency-path: "demos/sport-shop-angular/package-lock.json"
 
-      - name: Build Demos
+      - name: Build sports shop demo
         run: |
-          cd demos
-
-          cd react-flightsearch
+          BASE_HREF="/${GITHUB_REPOSITORY#*/}/"
+          cd demos/sport-shop-angular
           npm ci
-          npm run build
-          cd ..
+          npm run build -- --base-href "${BASE_HREF}"
 
-          cd webmcp-maze
-          npm ci
-          npm run build
-          cd ..
-
-          cd sport-shop-angular
-          npm ci
-          npm run build -- --base-href /webmcp-tools/demos/sport-shop-angular/
-          cd ..
-
-          cd hotel-chain
-          npm ci
-          npm run build
-          cd ..
-
-          cd analytics-dashboard
-          npm ci
-          npm run build
-          cd ..
-
-          cd leather-bag
-          npm ci
-          npm run build -- --base-href /webmcp-tools/demos/leather-bag/
-          cd ..
-
-          cd smart-home
-          npm ci
-          npm run build
-          cd ..
-
-
-      - name: Assemble Public Folder
+      - name: Assemble GitHub Pages artifact
         run: |
-          mkdir -p deployment-root/demos
-
-          cp -r demos/french-bistro deployment-root/demos/french-bistro
-          cp -r demos/shared deployment-root/demos/shared
-          cp -r demos/react-flightsearch/dist deployment-root/demos/react-flightsearch
-          cp -r demos/pizza-maker deployment-root/demos/pizza-maker
-          cp -r demos/doors deployment-root/demos/doors
-          cp -r demos/webmcp-maze/dist deployment-root/demos/webmcp-maze
-          cp -r demos/ticket-booking deployment-root/demos/ticket-booking
-          cp -r demos/sport-shop-angular/dist/sport-shop-angular/browser deployment-root/demos/sport-shop-angular
-          cp -r demos/order-tracking deployment-root/demos/order-tracking
-          cp -r demos/hotel-chain/dist deployment-root/demos/hotel-chain
-          cp -r demos/analytics-dashboard/dist deployment-root/demos/analytics-dashboard
-          cp -r demos/real-estate-map deployment-root/demos/real-estate-map
-          cp -r demos/coffee-shop deployment-root/demos/coffee-shop
-          cp -r demos/leather-bag/dist/leather-bag/browser deployment-root/demos/leather-bag
-          cp -r demos/smart-home/dist deployment-root/demos/smart-home
-          cp -r demos/page-agent deployment-root/demos/page-agent
-          cp -r demos/explainer deployment-root/demos/explainer
-
+          mkdir -p deployment-root
+          cp -r demos/sport-shop-angular/dist/sport-shop-angular/browser/. deployment-root/
 
       - name: Setup Pages
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6

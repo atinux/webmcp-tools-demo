@@ -2,8 +2,7 @@ version: 2
 updates:
   - package-ecosystem: "npm"
     directories:
-      - "/webmcp-evals"
-      - "/demos/*"
+      - "/demos/sport-shop-angular"
     schedule:
       interval: "weekly"
     groups:
