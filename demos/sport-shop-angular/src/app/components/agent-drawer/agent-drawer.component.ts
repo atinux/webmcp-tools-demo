@@ -6,7 +6,7 @@
 import { Component, ElementRef, ViewChild, AfterViewChecked, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AgentService, ChatMessage } from '../../services/agent.service';
+import { AgentService, AiProvider, ChatMessage, LOCAL_MODEL_ID } from '../../services/agent.service';
 import { MarkdownPipe } from '../../pipes/markdown.pipe';
 import { Observable } from 'rxjs';
 
@@ -149,6 +149,8 @@ export class AgentDrawerComponent implements OnInit, AfterViewChecked {
 
   isOpen$: Observable<boolean>;
   apiKey$: Observable<string>;
+  provider$: Observable<AiProvider>;
+  isConfigured$: Observable<boolean>;
   messages$: Observable<ChatMessage[]>;
   isLoading$: Observable<boolean>;
 
@@ -156,6 +158,8 @@ export class AgentDrawerComponent implements OnInit, AfterViewChecked {
   apiKeyInput: string = '';
   showApiKeySetup: boolean = false;
   showKeyPassword: boolean = false;
+
+  readonly localModelId = LOCAL_MODEL_ID;
 
   quickPrompts: string[] = [
     'Find basketball items under $50',
@@ -167,6 +171,8 @@ export class AgentDrawerComponent implements OnInit, AfterViewChecked {
   constructor(public agentService: AgentService) {
     this.isOpen$ = this.agentService.isOpen$;
     this.apiKey$ = this.agentService.apiKey$;
+    this.provider$ = this.agentService.provider$;
+    this.isConfigured$ = this.agentService.isConfigured$;
     this.messages$ = this.agentService.messages$;
     this.isLoading$ = this.agentService.isLoading$;
   }
@@ -174,7 +180,9 @@ export class AgentDrawerComponent implements OnInit, AfterViewChecked {
   ngOnInit() {
     this.apiKey$.subscribe(key => {
       this.apiKeyInput = key;
-      if (!key) {
+    });
+    this.isConfigured$.subscribe(configured => {
+      if (!configured) {
         this.showApiKeySetup = true;
       }
     });
@@ -205,6 +213,11 @@ export class AgentDrawerComponent implements OnInit, AfterViewChecked {
       this.agentService.setApiKey(this.apiKeyInput);
       this.showApiKeySetup = false;
     }
+  }
+
+  useLocalAi() {
+    this.agentService.setProvider('local');
+    this.showApiKeySetup = false;
   }
 
   toggleApiKeySettings() {

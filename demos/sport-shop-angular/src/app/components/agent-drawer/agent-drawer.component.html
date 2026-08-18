@@ -38,14 +38,16 @@
                 <h2 class="font-headline font-bold text-base leading-tight tracking-tight">Sports AI Assistant</h2>
                 <div class="flex items-center gap-2 mt-0.5">
                     <span class="inline-block w-2 h-2 rounded-full bg-green-400"></span>
-                    <span class="text-[10px] font-mono tracking-wider opacity-90 uppercase">Gemini • WebMCP</span>
+                    <span class="text-[10px] font-mono tracking-wider opacity-90 uppercase">
+                        {{ (provider$ | async) === 'local' ? 'Local Qwen3 • WebMCP' : 'Gemini • WebMCP' }}
+                    </span>
                 </div>
             </div>
         </div>
         <div class="flex items-center gap-1 text-on-primary">
-            @if (apiKey$ | async) {
-                <button (click)="toggleApiKeySettings()" title="API Key Settings" class="p-2 hover:bg-on-primary/10 rounded-lg transition-colors cursor-pointer">
-                    <span class="material-symbols-outlined text-xl">key</span>
+            @if (isConfigured$ | async) {
+                <button (click)="toggleApiKeySettings()" title="AI Provider Settings" class="p-2 hover:bg-on-primary/10 rounded-lg transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined text-xl">tune</span>
                 </button>
                 <button (click)="clearChat()" title="Clear Chat" class="p-2 hover:bg-on-primary/10 rounded-lg transition-colors cursor-pointer">
                     <span class="material-symbols-outlined text-xl">delete_sweep</span>
@@ -60,18 +62,51 @@
     <!-- Drawer Body -->
     <div class="flex-1 overflow-hidden flex flex-col relative bg-surface-container-lowest">
 
-        <!-- API Key Setup Screen -->
-        @if (showApiKeySetup || !(apiKey$ | async)) {
-            <div class="p-6 flex-1 flex flex-col justify-center items-center text-center bg-surface-container-low/50">
+        <!-- AI Provider Setup Screen -->
+        @if (showApiKeySetup || !(isConfigured$ | async)) {
+            <div class="p-6 flex-1 flex flex-col justify-center items-center text-center bg-surface-container-low/50 overflow-y-auto hide-scrollbar">
                 <div class="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center mb-4">
-                    <span class="material-symbols-outlined text-3xl">key</span>
+                    <span class="material-symbols-outlined text-3xl">smart_toy</span>
                 </div>
-                <h3 class="font-headline text-xl font-bold text-on-surface mb-2">Gemini API Key Required</h3>
+                <h3 class="font-headline text-xl font-bold text-on-surface mb-2">Choose your AI engine</h3>
                 <p class="text-xs text-on-surface-variant leading-relaxed mb-6 max-w-xs">
-                    Enter your Gemini API key to enable the AI assistant with WebMCP tools capability.
+                    Run a local model directly in your browser, or use the Gemini API with your own key.
                 </p>
 
                 <div class="w-full max-w-xs space-y-4">
+                    <!-- Local AI option -->
+                    <div class="text-left bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-4 space-y-3">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-xl">devices</span>
+                            <span class="text-xs font-bold text-on-surface">Local AI — no API key</span>
+                            @if ((provider$ | async) === 'local') {
+                                <span class="ml-auto text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-mono uppercase">Active</span>
+                            }
+                        </div>
+                        <p class="text-[11px] text-on-surface-variant leading-relaxed">
+                            Qwen3 1.7B runs fully in your browser via WebGPU (WebLLM).
+                            One-time ~1 GB download, cached by the browser. Works offline afterwards.
+                        </p>
+                        <button (click)="useLocalAi()"
+                            class="w-full py-3 bg-primary text-on-primary font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg hover:shadow-primary/30 transition-all cursor-pointer">
+                            Use Local AI
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-3 text-[10px] text-on-surface-variant/60 font-mono uppercase tracking-wider">
+                        <span class="flex-1 border-t border-outline-variant/20"></span>
+                        <span>or</span>
+                        <span class="flex-1 border-t border-outline-variant/20"></span>
+                    </div>
+
+                    <!-- Gemini API key option -->
+                    <div class="flex items-center gap-2 text-left">
+                        <span class="material-symbols-outlined text-primary text-xl">key</span>
+                        <span class="text-xs font-bold text-on-surface">Gemini API — bring your own key</span>
+                        @if ((provider$ | async) === 'gemini' && (apiKey$ | async)) {
+                            <span class="ml-auto text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-mono uppercase">Active</span>
+                        }
+                    </div>
                     <div class="relative">
                         <input
                             type="text"
@@ -93,7 +128,7 @@
 
                     <button (click)="saveApiKey()" [disabled]="!apiKeyInput.trim()"
                         class="w-full py-3 bg-primary text-on-primary font-bold rounded-xl text-xs uppercase tracking-wider shadow-lg hover:shadow-primary/30 transition-all disabled:opacity-50 cursor-pointer">
-                        Save & Start Chat
+                        Use Gemini API
                     </button>
 
                     @if (apiKey$ | async) {
@@ -109,6 +144,12 @@
                             <span class="material-symbols-outlined text-xs">open_in_new</span>
                         </a>
                     </div>
+
+                    @if (isConfigured$ | async) {
+                        <button (click)="showApiKeySetup = false" class="w-full py-2 text-on-surface-variant text-xs font-bold hover:underline cursor-pointer">
+                            ← Back to chat
+                        </button>
+                    }
                 </div>
             </div>
         } @else {
