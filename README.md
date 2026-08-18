@@ -2,6 +2,8 @@
 
 This repository now contains a single WebMCP demo: [**WebMCP Sports**](demos/sport-shop-angular/), an Angular storefront for sports equipment with in-browser WebMCP tools and an on-site AI assistant.
 
+**Live demo:** [https://atinux.github.io/webmcp-tools-demo/](https://atinux.github.io/webmcp-tools-demo/)
+
 ## Repository Layout
 
 - [**demos/sport-shop-angular**](demos/sport-shop-angular/) — the sports shop demo application
